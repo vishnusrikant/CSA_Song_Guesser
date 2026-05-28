@@ -4,7 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Songdle</title>
-  <link rel="stylesheet" href="styles.css" />
+
+  <!--
+    CACHE-BUSTING
+    =============
+    Browsers cache styles.css / script.js aggressively, so visitors with
+    an old copy keep seeing the old design even after we ship new code.
+
+    The `?v=N` query string at the end of each link is the fix: when the
+    number changes, the browser sees a brand-new URL and re-downloads the
+    file. The file on the server is identical - only the URL changes.
+
+    HOW TO USE: every time you change styles.css or script.js, bump the
+    `?v=` number in BOTH lines below (e.g. v=2 -> v=3 -> v=4). No other
+    change is required to invalidate every visitor's cache.
+  -->
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
   <!--
@@ -81,6 +96,7 @@
     </p>
   </main>
 
-  <script src="script.js"></script>
+  <!-- See CACHE-BUSTING note in <head>: bump ?v=N together with styles.css. -->
+  <script src="script.js?v=2"></script>
 </body>
 </html>
