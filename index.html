@@ -8,23 +8,26 @@
 </head>
 <body>
   <!--
-    PAGE LAYOUT
-    ===========
-    The page is one centered column. From top to bottom:
-      1. Header  - title "Songdle" + "Guess X of N" counter
-      2. Input   - text box where the player types a guess
-      3. Board   - stack of past-guess cards. Each card shows the guessed
-                   song plus a grid of 8 attribute tiles (Song Pic, Song
-                   Name, Artist, Album, Billboard Top 100, Genre, Length,
-                   Year). Each tile is colored green/yellow/gray based on
-                   how the guess compares to the target song.
-      4. Hints   - two hint buttons (Chorus Song Lyric, 5-sec Song Clip),
-                   locked until the player has used their first 5 guesses.
-      5. Legend  - reminder of what the three tile colors mean.
+    PAGE LAYOUT (matches the hand-drawn template)
+    =============================================
+      1. Title    - "Songdle" centered above the guess input (green text).
+      2. Counter  - "Guess X of N" right under the title.
+      3. Input    - text box where the player types a guess.
+      4. Board    - stack of past-guess cards. Each card shows the guessed
+                    song (avatar + name) on top and a 3-column x 2-row grid
+                    of attribute clue tiles below:
+                        Album   | Genre             | Year
+                        Artist  | Billboard Top 100 | Length
+                    Song Pic and Song Name are intentionally NOT shown as
+                    clue tiles because they already appear at the top of
+                    each guess card.
+      5. Hints    - Chorus Song Lyric + 5-sec Song Clip, locked until the
+                    player has used 5 guesses.
+      6. Legend   - reminder of what the three tile colors mean.
   -->
   <main class="container">
 
-    <!-- 1. HEADER -->
+    <!-- 1 & 2. HEADER: centered title + counter, above the input. -->
     <header class="header">
       <h1 class="title">Songdle</h1>
       <p class="counter">
@@ -32,9 +35,7 @@
       </p>
     </header>
 
-    <!-- 2. GUESS INPUT
-         The form fires the `submit` event in script.js, which reads the
-         text, creates a new guess card, and appends it to #board. -->
+    <!-- 3. GUESS INPUT -->
     <form id="guess-form" class="guess-form" autocomplete="off">
       <input
         id="guess-input"
@@ -48,14 +49,10 @@
       </button>
     </form>
 
-    <!-- 3. BOARD
-         Empty on page load. script.js injects a <article class="guess-card">
-         here for every guess the player submits. -->
+    <!-- 4. BOARD: script.js prepends a <article class="guess-card"> per guess. -->
     <section id="board" class="board" aria-live="polite"></section>
 
-    <!-- 4. HINTS PANEL
-         Both buttons start with the `.locked` class. script.js removes that
-         class once the player has made 5 wrong guesses. -->
+    <!-- 5. HINTS PANEL: unlocked once 5 guesses are used. -->
     <section class="hints">
       <h2 class="hints-title">Tap the hint you want!</h2>
       <p class="hints-subtitle">Hints unlock after 5 wrong guesses.</p>
@@ -72,7 +69,7 @@
       <div id="hint-display" class="hint-display"></div>
     </section>
 
-    <!-- 5. LEGEND -->
+    <!-- 6. LEGEND -->
     <section class="legend">
       <span class="legend-item legend-none">No Match</span>
       <span class="legend-item legend-close">Close</span>

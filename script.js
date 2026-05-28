@@ -3,7 +3,12 @@
    -------------------------------------------------------------------------
    What this file does TODAY:
      - Reads each guess the player types.
-     - Renders a guess card with 8 attribute tiles per the template.
+     - Renders a guess card with a 3x2 grid of 6 clue tiles, matching the
+       hand-drawn template:
+           Row 1: Album  | Genre             | Year
+           Row 2: Artist | Billboard Top 100 | Length
+       Song Pic and Song Name are intentionally NOT clue tiles - they
+       already appear at the top of every guess card.
      - Tracks how many guesses have been used (max 10).
      - Unlocks the two hint buttons after 5 guesses.
 
@@ -12,8 +17,8 @@
      - The function `evaluateGuess()` returns placeholder "pending" tiles
        so the UI is testable end-to-end. When the dataset is added later,
        the only function that needs to change is `evaluateGuess()`. The
-       rest of the rendering code already understands match / close / none
-       / pending states.
+       rest of the rendering code already understands match / close /
+       none / pending states.
    ========================================================================= */
 
 /* ---------- Config ---------- */
@@ -24,17 +29,16 @@ const MAX_GUESSES = 10;
 // How many wrong guesses before the hint buttons unlock.
 const HINT_UNLOCK_AFTER = 5;
 
-// The 8 attributes the template asks us to show on every guess card.
-// Order here = display order in the tile grid.
+// The 6 clue tiles shown under every guess. Order = template layout:
+//   Row 1: Album, Genre, Year
+//   Row 2: Artist, Billboard Top 100, Length
 const ATTRIBUTES = [
-  { key: "songPic",   label: "Song Pic"          },
-  { key: "songName",  label: "Song Name"         },
-  { key: "artist",    label: "Artist"            },
   { key: "album",     label: "Album"             },
-  { key: "billboard", label: "Billboard Top 100" },
   { key: "genre",     label: "Genre"             },
-  { key: "length",    label: "Length"            },
-  { key: "year",      label: "Year"              }
+  { key: "year",      label: "Year"              },
+  { key: "artist",    label: "Artist"            },
+  { key: "billboard", label: "Billboard Top 100" },
+  { key: "length",    label: "Length"            }
 ];
 
 /* ---------- DOM references ---------- */
@@ -52,7 +56,6 @@ const hintDisplay  = document.getElementById("hint-display");
 
 let guessesMade = 0;   // number of guesses the player has submitted
 
-// Show the configured max in the header ("Guess 1 of 10").
 maxGuessesEl.textContent = MAX_GUESSES;
 guessNumberEl.textContent = guessesMade + 1;
 
@@ -73,7 +76,7 @@ guessNumberEl.textContent = guessesMade + 1;
        - length:    within 30 seconds      -> close
        - billboard: within 10 chart spots  -> close
        - genre:     same parent genre      -> close
-       - album/artist/songName: substring overlap -> close
+       - album/artist: substring overlap   -> close
 
    Until then we return every tile in "pending" state so the UI is
    visible and testable without any real data.
@@ -88,7 +91,7 @@ function evaluateGuess(guessText) {
 
 /* ---------- Rendering ---------- */
 
-// Build one attribute tile (label on top, value below, color = status).
+// One attribute tile: label on top, value below, color = status.
 function renderTile(attr, result) {
   const tile = document.createElement("div");
   tile.className = `tile ${result.status}`;
@@ -105,18 +108,19 @@ function renderTile(attr, result) {
   return tile;
 }
 
-// Build one full guess card: song-pic circle + guess text + 8 tiles.
+// One full guess card: avatar + guess text + 6 clue tiles.
+// The avatar/text at the top IS the "Song Pic" + "Song Name" - that is
+// why we don't repeat those as clue tiles below.
 function renderGuessCard(guessText, results) {
   const card = document.createElement("article");
   card.className = "guess-card";
 
-  // Card header: round placeholder image + the guessed string.
   const head = document.createElement("div");
   head.className = "guess-card-head";
 
   const pic = document.createElement("div");
   pic.className = "song-pic";
-  pic.textContent = "🎵"; // musical note placeholder
+  pic.textContent = "🎵"; // generic musical-note placeholder
 
   const text = document.createElement("div");
   text.className = "guess-text";
@@ -124,7 +128,6 @@ function renderGuessCard(guessText, results) {
 
   head.append(pic, text);
 
-  // Tile grid built from ATTRIBUTES order + the evaluator's results.
   const grid = document.createElement("div");
   grid.className = "tile-grid";
   ATTRIBUTES.forEach((attr, i) => {
@@ -137,39 +140,33 @@ function renderGuessCard(guessText, results) {
 
 /* ---------- Event handlers ---------- */
 
-// Player submits a guess.
 function handleGuess(event) {
   event.preventDefault();
 
   const guessText = guessInput.value.trim();
-  if (!guessText) return;                 // ignore empty submissions
-  if (guessesMade >= MAX_GUESSES) return; // out of guesses
+  if (!guessText) return;
+  if (guessesMade >= MAX_GUESSES) return;
 
-  // Evaluate (placeholder for now) and render.
   const results = evaluateGuess(guessText);
   board.prepend(renderGuessCard(guessText, results));
 
-  // Bookkeeping.
   guessesMade += 1;
   guessInput.value = "";
   updateCounter();
   maybeUnlockHints();
 
-  // Disable input once the player has used all their guesses.
   if (guessesMade >= MAX_GUESSES) {
     guessInput.disabled = true;
     guessInput.placeholder = "Out of guesses!";
   }
 }
 
-// Keep the "Guess X of N" counter in sync. It shows the *next* guess number
-// so the player sees "Guess 1 of 10" before typing the first one.
+// Header counter shows the *next* guess number (so it starts at "Guess 1").
 function updateCounter() {
   const next = Math.min(guessesMade + 1, MAX_GUESSES);
   guessNumberEl.textContent = next;
 }
 
-// Unlock the hint buttons once HINT_UNLOCK_AFTER guesses have been used.
 function maybeUnlockHints() {
   if (guessesMade < HINT_UNLOCK_AFTER) return;
   [hintLyricBtn, hintClipBtn].forEach(btn => {
@@ -178,7 +175,6 @@ function maybeUnlockHints() {
   });
 }
 
-// Hint button handlers - placeholder text until real data exists.
 hintLyricBtn.addEventListener("click", () => {
   if (hintLyricBtn.classList.contains("locked")) return;
   // TODO: replace with the target song's chorus lyric from the dataset.
