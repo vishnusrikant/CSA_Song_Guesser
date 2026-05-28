@@ -7,28 +7,81 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!--
+    PAGE LAYOUT
+    ===========
+    The page is one centered column. From top to bottom:
+      1. Header  - title "Songdle" + "Guess X of N" counter
+      2. Input   - text box where the player types a guess
+      3. Board   - stack of past-guess cards. Each card shows the guessed
+                   song plus a grid of 8 attribute tiles (Song Pic, Song
+                   Name, Artist, Album, Billboard Top 100, Genre, Length,
+                   Year). Each tile is colored green/yellow/gray based on
+                   how the guess compares to the target song.
+      4. Hints   - two hint buttons (Chorus Song Lyric, 5-sec Song Clip),
+                   locked until the player has used their first 5 guesses.
+      5. Legend  - reminder of what the three tile colors mean.
+  -->
   <main class="container">
-    <h1 class="title">Songdle</h1>
-    <p class="tagline">Guess the song of the day!</p>
 
-    <section id="game" class="game">
-      <div id="clue" class="clue">Press Start to begin.</div>
+    <!-- 1. HEADER -->
+    <header class="header">
+      <h1 class="title">Songdle</h1>
+      <p class="counter">
+        Guess <span id="guess-number">1</span> of <span id="max-guesses">10</span>
+      </p>
+    </header>
 
-      <form id="guess-form" class="guess-form" autocomplete="off">
-        <input
-          id="guess-input"
-          class="guess-input"
-          type="text"
-          placeholder="Type your guess..."
-          disabled
-        />
-        <button id="guess-button" class="btn" type="submit" disabled>Guess</button>
-      </form>
+    <!-- 2. GUESS INPUT
+         The form fires the `submit` event in script.js, which reads the
+         text, creates a new guess card, and appends it to #board. -->
+    <form id="guess-form" class="guess-form" autocomplete="off">
+      <input
+        id="guess-input"
+        class="guess-input"
+        type="text"
+        placeholder="Type a guess here..."
+        aria-label="Song guess"
+      />
+      <button class="btn-search" type="submit" aria-label="Submit guess">
+        &#x1F50D;
+      </button>
+    </form>
 
-      <button id="start-button" class="btn btn-primary" type="button">Start</button>
+    <!-- 3. BOARD
+         Empty on page load. script.js injects a <article class="guess-card">
+         here for every guess the player submits. -->
+    <section id="board" class="board" aria-live="polite"></section>
 
-      <div id="result" class="result" aria-live="polite"></div>
+    <!-- 4. HINTS PANEL
+         Both buttons start with the `.locked` class. script.js removes that
+         class once the player has made 5 wrong guesses. -->
+    <section class="hints">
+      <h2 class="hints-title">Tap the hint you want!</h2>
+      <p class="hints-subtitle">Hints unlock after 5 wrong guesses.</p>
+      <div class="hints-buttons">
+        <button id="hint-lyric" class="hint-btn locked" type="button" disabled>
+          <span class="hint-lock">&#x1F512;</span>
+          Chorus Song Lyric
+        </button>
+        <button id="hint-clip" class="hint-btn locked" type="button" disabled>
+          <span class="hint-lock">&#x1F512;</span>
+          5-sec Song Clip
+        </button>
+      </div>
+      <div id="hint-display" class="hint-display"></div>
     </section>
+
+    <!-- 5. LEGEND -->
+    <section class="legend">
+      <span class="legend-item legend-none">No Match</span>
+      <span class="legend-item legend-close">Close</span>
+      <span class="legend-item legend-match">Match</span>
+    </section>
+
+    <p class="footer-note">
+      Use the matching attributes to make more guesses. Good luck!
+    </p>
   </main>
 
   <script src="script.js"></script>

@@ -1,5 +1,13 @@
-/* Songdle - foundational styles */
+/* =========================================================================
+   Songdle - stylesheet
+   -------------------------------------------------------------------------
+   The visual language borrows from Spotle: a tile grid where each tile is
+   colored to signal match / close / no-match. We keep the green Songdle
+   theme as the page background and use darker green panels on top so the
+   colored tiles still read clearly.
+   ========================================================================= */
 
+/* ---------- Reset / base ---------- */
 * {
   box-sizing: border-box;
 }
@@ -12,85 +20,244 @@ body {
 }
 
 body {
-  background-color: green;
+  /* Songdle signature: solid green background */
+  background-color: #1DB954; /* Spotify-ish green */
   color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  padding: 24px 16px;
 }
 
+/* ---------- Main column ---------- */
 .container {
   width: 100%;
-  max-width: 640px;
-  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---------- 1. Header ---------- */
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .title {
-  font-size: 4rem;
-  margin: 0 0 0.25rem 0;
-  letter-spacing: 2px;
+  font-size: 2.6rem;
+  margin: 0;
+  letter-spacing: 1px;
+  font-weight: 800;
 }
 
-.tagline {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin: 0 0 2rem 0;
+.counter {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.95;
+  font-weight: 600;
 }
 
-.game {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.clue {
-  font-size: 1.2rem;
-  margin-bottom: 1.25rem;
-  min-height: 1.5em;
-}
-
+/* ---------- 2. Guess input ---------- */
 .guess-form {
   display: flex;
   gap: 8px;
-  justify-content: center;
-  margin-bottom: 1rem;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 6px 6px 6px 18px;
+  align-items: center;
 }
 
 .guess-input {
   flex: 1;
-  max-width: 320px;
-  padding: 10px 12px;
-  border-radius: 6px;
   border: none;
+  outline: none;
   font-size: 1rem;
+  padding: 8px 0;
+  background: transparent;
+  color: #222;
 }
 
-.btn {
-  padding: 10px 18px;
-  border-radius: 6px;
+.btn-search {
   border: none;
-  background: #ffffff;
-  color: green;
-  font-weight: 600;
+  background: #1DB954;
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   cursor: pointer;
   font-size: 1rem;
 }
 
-.btn:disabled {
-  opacity: 0.6;
+/* ---------- 3. Board (guess cards) ---------- */
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.guess-card {
+  background: #0f0f10;       /* dark panel like Spotle */
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card header: small song-pic circle + the guessed text */
+.guess-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.song-pic {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.guess-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  word-break: break-word;
+}
+
+/* Attribute tile grid - 3 columns on phones, fills available width. */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.tile {
+  border-radius: 10px;
+  padding: 10px 8px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.tile-label {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.tile-value {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Result colors. The JS adds one of these classes per tile. */
+.tile.match   { background: #2ea44f; }   /* green  - exact match */
+.tile.close   { background: #d4b106; color: #1a1a1a; }  /* yellow - close */
+.tile.none    { background: #3a3a3a; }   /* gray   - no match */
+.tile.pending { background: #2a2a2a; color: #888; }  /* awaiting dataset */
+
+/* ---------- 4. Hints panel ---------- */
+.hints {
+  background: #0f0f10;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.hints-title {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.hints-subtitle {
+  margin: 0 0 10px 0;
+  font-size: 0.8rem;
+  color: #aaaaaa;
+}
+
+.hints-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hint-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #1DB954;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.hint-btn.locked {
+  background: #2a2a2a;
+  color: #777;
   cursor: not-allowed;
 }
 
-.btn-primary {
-  background: #ffd54a;
-  color: #222;
+.hint-lock {
+  font-size: 0.9rem;
 }
 
-.result {
-  margin-top: 1rem;
-  min-height: 1.5em;
+.hint-btn:not(.locked) .hint-lock {
+  display: none;          /* drop the lock icon once unlocked */
+}
+
+.hint-display {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #ddd;
+  min-height: 1.2em;
+}
+
+/* ---------- 5. Legend ---------- */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.legend-item {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: #ffffff;
+}
+
+.legend-none  { background: #3a3a3a; }
+.legend-close { background: #d4b106; color: #1a1a1a; }
+.legend-match { background: #2ea44f; }
+
+.footer-note {
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.95;
+  margin: 0;
 }
