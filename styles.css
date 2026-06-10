@@ -139,6 +139,15 @@ body {
   word-break: break-word;
 }
 
+/* Artist credit shown under the guessed song name. */
+.guess-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #9aa0a6;
+  margin-top: 2px;
+  word-break: break-word;
+}
+
 /* 3-column x 2-row clue grid, matching the template. */
 .tile-grid {
   display: grid;
@@ -252,3 +261,15 @@ body {
   color: #444;
   margin: 0;
 }
+
+/* ---------- Status / win / lose message ---------- */
+.message {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+  min-height: 1.2em;
+}
+.message.win  { color: #1DB954; }   /* green  */
+.message.lose { color: #c0392b; }   /* red    */
