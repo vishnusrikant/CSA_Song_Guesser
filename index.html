@@ -19,7 +19,7 @@
     `?v=` number in BOTH lines below (e.g. v=2 -> v=3 -> v=4). No other
     change is required to invalidate every visitor's cache.
   -->
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
   <!--
@@ -50,23 +50,28 @@
       </p>
     </header>
 
-    <!-- 3. GUESS INPUT -->
-    <form id="guess-form" class="guess-form" autocomplete="off">
-      <input
-        id="guess-input"
-        class="guess-input"
-        type="text"
-        list="song-list"
-        placeholder="Type a guess here..."
-        aria-label="Song guess"
-      />
-      <button class="btn-search" type="submit" aria-label="Submit guess">
-        &#x1F50D;
-      </button>
-    </form>
+    <!-- 3. GUESS INPUT + autocomplete dropdown -->
+    <!-- .search-wrap is position:relative so the dropdown can sit under it. -->
+    <div class="search-wrap">
+      <form id="guess-form" class="guess-form" autocomplete="off">
+        <input
+          id="guess-input"
+          class="guess-input"
+          type="text"
+          placeholder="Type a guess here..."
+          aria-label="Song guess"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-controls="suggestions"
+        />
+        <button class="btn-search" type="submit" aria-label="Submit guess">
+          &#x1F50D;
+        </button>
+      </form>
 
-    <!-- Autocomplete options are filled in by script.js as the player types. -->
-    <datalist id="song-list"></datalist>
+      <!-- script.js fills this with matching songs (top 5 visible, scrollable). -->
+      <ul id="suggestions" class="suggestions" role="listbox"></ul>
+    </div>
 
     <!-- Status / win / lose messages. -->
     <p id="message" class="message" aria-live="polite"></p>
@@ -102,6 +107,6 @@
   </main>
 
   <!-- See CACHE-BUSTING note in <head>: bump ?v=N together with styles.css. -->
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
