@@ -428,6 +428,18 @@ guessInput.addEventListener("input", () => {
 // Keyboard: arrows move the highlight, Enter picks it (then a 2nd Enter
 // submits via the form), Escape closes the list.
 guessInput.addEventListener("keydown", (e) => {
+  // If a song is locked in, Backspace/Delete wipes the WHOLE selection at
+  // once (so the player can start a fresh search) instead of nibbling one
+  // character off the "Title - Artist" text.
+  if ((e.key === "Backspace" || e.key === "Delete") && selectedSong) {
+    e.preventDefault();
+    selectedSong = null;
+    guessInput.value = "";
+    closeSuggestions();
+    setMessage("Selection cleared - type a new search.");
+    return;
+  }
+
   const open = suggestionsEl.classList.contains("open");
   if (e.key === "ArrowDown") { e.preventDefault(); moveActive(1); }
   else if (e.key === "ArrowUp") { e.preventDefault(); moveActive(-1); }
