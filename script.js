@@ -30,8 +30,12 @@ const MAX_GUESSES = 10;          // guesses per round
 const HINT_UNLOCK_AFTER = 5;     // wrong guesses before hints unlock
 const DATA_URL = "data/spotify_tracks_popular.csv";
 
-const MIN_CHARS = 1;             // start suggesting after this many letters
+const MIN_CHARS = 3;             // start suggesting after this many letters
 const MAX_RESULTS = 50;          // most-popular matches loaded into the list
+
+// The secret answer is drawn only from well-known songs (popularity above
+// this, on the rescaled 20-100 scale). Guesses may still be ANY song.
+const ANSWER_MIN_POPULARITY = 50;
 
 // "Close" thresholds (tune freely).
 const POP_CLOSE = 10;            // popularity within +/-10  -> close
@@ -160,7 +164,11 @@ function parseCSV(text) {
    ========================================================================= */
 
 function startRound() {
-  target = songs[Math.floor(Math.random() * songs.length)];
+  // The answer is restricted to popular songs; guesses are not (computeMatches
+  // still searches the full `songs` set).
+  const answerPool = songs.filter(s => s.popularity > ANSWER_MIN_POPULARITY);
+  const pool = answerPool.length ? answerPool : songs; // fallback, just in case
+  target = pool[Math.floor(Math.random() * pool.length)];
   console.log("[Songdle] secret song:", target.track_name, "-", target.artists); // dev aid
   guessInput.disabled = false;
   guessInput.placeholder = "Type a song title...";
